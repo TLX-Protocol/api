@@ -106,3 +106,7 @@ This view will show a list of the user's invite codes.
 For each invite code it will call our API endpoint to check if that Invite code has been used.
 If it has been used, there will be a visual indicator for this.
 Next to each invite code will be a copy button allowing users to copy the invite code.
+
+### Privacy Policy
+
+Our Privacy Policy will need to be updated now that we are collecting additional information from our users.
