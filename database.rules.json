@@ -1,0 +1,12 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "users": {
+      ".indexOn": ["twitterUsername", "discordUsername"]
+    },
+    "invites": {
+      ".indexOn": ["creator"]
+    }
+  }
+}
