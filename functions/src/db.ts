@@ -35,7 +35,7 @@ export async function generateAndSaveInviteCodes(user: string, count: number): P
   const codes = [];
   for (let i = 0; i < count; i++) {
     const code = await generateInviteCode();
-    const codeMetadata = { creator: user, used: false, createdAt: Date.now() };
+    const codeMetadata = { creator: user, used: false, createdAt: Date.now(), code };
     codes.push(code);
     await db.ref("invites").child(code).set(codeMetadata);
   }
