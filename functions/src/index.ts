@@ -50,7 +50,6 @@ export const adminCreateInviteCodes = onRequest(
   wrapHandler(async (request) => {
     const { amount } = validateParams<{ amount: string }>(request.query, "amount");
     const adminAddress = "0x0000000000000000000000000000000000000000";
-    const codes = await generateAndSaveInviteCodes(adminAddress, Number(amount));
-    return codes;
+    return await generateAndSaveInviteCodes(adminAddress, Number(amount));
   })
 );

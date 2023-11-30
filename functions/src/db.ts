@@ -30,13 +30,13 @@ async function generateInviteCode(): Promise<string> {
   return code;
 }
 
-export async function generateAndSaveInviteCodes(user: string, count: number): Promise<Code[]> {
+export async function generateAndSaveInviteCodes(user: string, count: number): Promise<string[]> {
   const db = admin.database();
   const codes = [];
   for (let i = 0; i < count; i++) {
     const code = await generateInviteCode();
     const codeMetadata = { creator: user, used: false, createdAt: Date.now() };
-    codes.push(codeMetadata);
+    codes.push(code);
     await db.ref("invites").child(code).set(codeMetadata);
   }
   return codes;
