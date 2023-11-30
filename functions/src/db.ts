@@ -2,7 +2,6 @@ import admin from "firebase-admin";
 
 import { createRandomString } from "./utils";
 import { codeLength } from "./constants";
-import { Code } from "./types";
 
 export async function usernameExists(key: string, username: string): Promise<boolean> {
   const db = admin.database();
