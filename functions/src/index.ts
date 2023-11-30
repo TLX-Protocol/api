@@ -3,7 +3,7 @@ import admin from "firebase-admin";
 
 import registrationHandler from "./registration";
 import wrapHandler, { getUserAddress, validateParams } from "./utils";
-import { userExists } from "./db";
+import { generateAndSaveInviteCodes, userExists } from "./db";
 import { APIError, SignedParams } from "./types";
 
 admin.initializeApp();
@@ -43,5 +43,14 @@ export const inviteCodeUsed = onRequest(
       throw new APIError("Invalid invite code");
     }
     return codeSnapshot.val().used;
+  })
+);
+
+export const adminCreateInviteCodes = onRequest(
+  wrapHandler(async (request) => {
+    const { amount } = validateParams<{ amount: string }>(request.query, "amount");
+    const adminAddress = "0x0000000000000000000000000000000000000000";
+    const codes = await generateAndSaveInviteCodes(adminAddress, Number(amount));
+    return codes;
   })
 );
