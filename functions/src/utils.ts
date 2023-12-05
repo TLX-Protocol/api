@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { codeValidChars, messageToSign } from "./constants";
 import { APIError, FunctionHandler, HTTPHandler } from "./types";
-import cors from "cors";
+import * as cors from "cors";
 
 const corsFunc = cors({ origin: true });
 
