@@ -18,6 +18,9 @@ jobs:
       - name: Building App
         working-directory: ./functions
         run: yarn run build
+      - name: Linting
+        working-directory: ./functions
+        run: yarn run lint
       - name: Install Firebase Tools
         run: npm install -g firebase-tools
       - name: Deploying to Firebase
