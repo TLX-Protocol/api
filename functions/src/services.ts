@@ -1,5 +1,5 @@
 import fetch, { Response } from "node-fetch";
-import { redirectURI, getCredentials, oauthURLs } from "./constants";
+import { redirectURI, getCredentials, oauthURLs, Secrets } from "./constants";
 import { Guild, ServiceType, TokenResponse, TwitterUserResponse, User } from "./types";
 
 async function processResponse<T>(response: Response): Promise<T> {
@@ -9,14 +9,14 @@ async function processResponse<T>(response: Response): Promise<T> {
   return (await response.json()) as T;
 }
 
-function getAuthorization(service: ServiceType) {
-  const { clientID, clientSecret } = getCredentials(service);
+function getAuthorization(service: ServiceType, secrets: Secrets) {
+  const { clientID, clientSecret } = getCredentials(service, secrets);
   const encodedCredentials = Buffer.from(`${clientID}:${clientSecret}`).toString("base64");
   const paddingLength = (4 - (encodedCredentials.length % 4)) % 4;
   return encodedCredentials + "=".repeat(paddingLength);
 }
 
-async function getAccessToken(service: ServiceType, code: string): Promise<string> {
+async function getAccessToken(service: ServiceType, code: string, secrets: Secrets): Promise<string> {
   const params = new URLSearchParams({ code, grant_type: "authorization_code", redirect_uri: redirectURI });
   if (service === ServiceType.Twitter) {
     params.set("code_verifier", "challenge");
@@ -24,7 +24,7 @@ async function getAccessToken(service: ServiceType, code: string): Promise<strin
 
   const headers = {
     "Content-Type": "application/x-www-form-urlencoded",
-    "Authorization": `Basic ${getAuthorization(service)}`,
+    "Authorization": `Basic ${getAuthorization(service, secrets)}`,
   };
   const response = await fetch(oauthURLs[service], { method: "POST", body: params.toString(), headers });
   const data = await processResponse<TokenResponse>(response);
@@ -44,8 +44,8 @@ class Service {
 }
 
 export class TwitterService extends Service {
-  static async fromCode(code: string): Promise<TwitterService> {
-    return new TwitterService(await getAccessToken(ServiceType.Twitter, code));
+  static async fromCode(code: string, secrets: Secrets): Promise<TwitterService> {
+    return new TwitterService(await getAccessToken(ServiceType.Twitter, code, secrets));
   }
 
   async getUsername(): Promise<string> {
@@ -55,8 +55,8 @@ export class TwitterService extends Service {
 }
 
 export class DiscordService extends Service {
-  static async fromCode(code: string): Promise<DiscordService> {
-    return new DiscordService(await getAccessToken(ServiceType.Discord, code));
+  static async fromCode(code: string, secrets: Secrets): Promise<DiscordService> {
+    return new DiscordService(await getAccessToken(ServiceType.Discord, code, secrets));
   }
 
   async getUsername(): Promise<string> {

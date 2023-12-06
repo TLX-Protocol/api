@@ -1,25 +1,18 @@
 import { OauthCredentials, ServiceType } from "./types";
 
-function getEnv(name: string): string {
-  const value = process.env[name];
-  if (value === undefined) {
-    throw new Error(`Missing environment variable ${name}`);
-  }
-  return value;
+export interface Secrets {
+  twitterClientID: string;
+  twitterClientSecret: string;
+  discordClientID: string;
+  discordClientSecret: string;
 }
 
 export const redirectURI = "https://tlx.fi/referrals";
 
-const prefixes = {
-  [ServiceType.Twitter]: "TWITTER_",
-  [ServiceType.Discord]: "DISCORD_",
-};
-
-export function getCredentials(service: ServiceType): OauthCredentials {
-  const prefix = prefixes[service];
+export function getCredentials(service: ServiceType, secrets: Secrets): OauthCredentials {
   return {
-    clientID: getEnv(`${prefix}CLIENT_ID`),
-    clientSecret: getEnv(`${prefix}CLIENT_SECRET`),
+    clientID: service === ServiceType.Twitter ? secrets.twitterClientID : secrets.discordClientID,
+    clientSecret: service === ServiceType.Twitter ? secrets.twitterClientSecret : secrets.discordClientSecret,
   };
 }
 

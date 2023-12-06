@@ -4,26 +4,26 @@ import admin from "firebase-admin";
 
 import { DiscordService, TwitterService } from "./services";
 import { APIError, RegistrationParams, Guild } from "./types";
-import { invitesPerUser, tlxGuidID } from "./constants";
+import { Secrets, invitesPerUser, tlxGuidID } from "./constants";
 import { generateAndSaveInviteCodes, useCode, userExists, usernameExists } from "./db";
 import { getUserAddress, validateParams } from "./utils";
 
 const requiredKeys = ["twitterCode", "discordCode", "signature", "inviteCode"];
 
-async function getTwitterUsername(code: string): Promise<string> {
+async function getTwitterUsername(code: string, secrets: Secrets): Promise<string> {
   try {
     logger.info("Getting Twitter data");
-    const twitterService = await TwitterService.fromCode(code);
+    const twitterService = await TwitterService.fromCode(code, secrets);
     return twitterService.getUsername();
   } catch (error) {
     throw new APIError(`Twitter authentication failed: ${error}`);
   }
 }
 
-async function getDiscordData(code: string): Promise<{ username: string; guilds: Guild[] }> {
+async function getDiscordData(code: string, secrets: Secrets): Promise<{ username: string; guilds: Guild[] }> {
   try {
     logger.info("Getting Discord data");
-    const discordService = await DiscordService.fromCode(code);
+    const discordService = await DiscordService.fromCode(code, secrets);
     const username = await discordService.getUsername();
     const guilds = await discordService.getGuilds();
     return { username, guilds };
@@ -32,7 +32,7 @@ async function getDiscordData(code: string): Promise<{ username: string; guilds:
   }
 }
 
-export default async function registrationHandler(request: Request) {
+export default async function registrationHandler(request: Request, secrets: Secrets) {
   const params = validateParams<RegistrationParams>(request.body, ...requiredKeys);
   const address = getUserAddress(params.signature);
 
@@ -50,13 +50,13 @@ export default async function registrationHandler(request: Request) {
     throw new APIError("Code already used");
   }
 
-  const twitterUsername = await getTwitterUsername(params.twitterCode);
+  const twitterUsername = await getTwitterUsername(params.twitterCode, secrets);
 
   if (await usernameExists("twitterUsername", twitterUsername)) {
     throw new APIError("Twitter already used");
   }
 
-  const { username: discordUsername, guilds } = await getDiscordData(params.discordCode);
+  const { username: discordUsername, guilds } = await getDiscordData(params.discordCode, secrets);
 
   if (await usernameExists("discordUsername", discordUsername)) {
     throw new APIError("Discord already used");

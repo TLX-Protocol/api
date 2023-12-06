@@ -5,10 +5,26 @@ import registrationHandler from "./registration";
 import wrapHandler, { getUserAddress, validateParams } from "./utils";
 import { userExists } from "./db";
 import { APIError, SignedParams } from "./types";
+import { defineSecret } from "firebase-functions/params";
+
+const twitterClientID = defineSecret("TWITTER_CLIENT_ID");
+const twitterClientSecret = defineSecret("TWITTER_CLIENT_SECRET");
+const discordClientID = defineSecret("DISCORD_CLIENT_ID");
+const discordClientSecret = defineSecret("DISCORD_CLIENT_SECRET");
 
 admin.initializeApp();
 
-export const register = onRequest(wrapHandler(registrationHandler));
+export const register = onRequest(
+  { secrets: [twitterClientID, twitterClientSecret, discordClientID, discordClientSecret] },
+  wrapHandler(async (request) => {
+    registrationHandler(request, {
+      twitterClientID: twitterClientID.value(),
+      twitterClientSecret: twitterClientSecret.value(),
+      discordClientID: discordClientID.value(),
+      discordClientSecret: discordClientSecret.value(),
+    });
+  })
+);
 
 export const inviteCodes = onRequest(
   wrapHandler(async (request) => {
