@@ -17,7 +17,7 @@ admin.initializeApp();
 export const register = onRequest(
   { secrets: [twitterClientID, twitterClientSecret, discordClientID, discordClientSecret] },
   wrapHandler(async (request) => {
-    registrationHandler(request, {
+    await registrationHandler(request, {
       twitterClientID: twitterClientID.value(),
       twitterClientSecret: twitterClientSecret.value(),
       discordClientID: discordClientID.value(),
