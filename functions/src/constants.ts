@@ -7,7 +7,7 @@ export interface Secrets {
   discordClientSecret: string;
 }
 
-export const redirectURI = "https://tlx.fi/referrals";
+export const redirectURI = "https://tlx.fi/register";
 
 export function getCredentials(service: ServiceType, secrets: Secrets): OauthCredentials {
   return {
