@@ -24,7 +24,9 @@ export const oauthURLs = {
 export const tlxGuidID = "1142096814573621308";
 
 export const messageToSign =
-  "I authorize TLX to use my Twitter and Discord usernames for the purpose of verifying my identity.";
+  "I agree to the TLX Terms of Service (https://tlx.fi/terms-of-service)" +
+  " and TLX Privacy Policy (https://tlx.fi/privacy-policiy)." +
+  " I acknowledge that TLX integrates with third-party applications, which may come with risks";
 
 export const codeValidChars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 export const codeLength = 4;
