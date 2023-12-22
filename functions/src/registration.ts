@@ -13,6 +13,7 @@ const requiredKeys = ["twitterCode", "discordCode", "signature", "inviteCode"];
 async function getTwitterUsername(code: string, secrets: Secrets): Promise<string> {
   try {
     logger.info("Getting Twitter data");
+    logger.info(`Code: ${code}`);
     const twitterService = await TwitterService.fromCode(code, secrets);
     return twitterService.getUsername();
   } catch (error) {
@@ -23,6 +24,7 @@ async function getTwitterUsername(code: string, secrets: Secrets): Promise<strin
 async function getDiscordData(code: string, secrets: Secrets): Promise<{ username: string; guilds: Guild[] }> {
   try {
     logger.info("Getting Discord data");
+    logger.info(`Code: ${code}`);
     const discordService = await DiscordService.fromCode(code, secrets);
     const username = await discordService.getUsername();
     const guilds = await discordService.getGuilds();
