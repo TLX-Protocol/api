@@ -37,13 +37,14 @@ async function getDiscordData(code: string, secrets: Secrets): Promise<{ usernam
 export default async function registrationHandler(request: Request, secrets: Secrets) {
   const params = validateParams<RegistrationParams>(request.body, ...requiredKeys);
   const address = getUserAddress(params.signature);
-
   const db = admin.database();
 
+  // Validating address
   if (await userExists(address)) {
     throw new APIError("Address already used");
   }
 
+  // Validating invite code
   const codeSnapshot = await db.ref("invites").child(params.inviteCode).get();
   if (!codeSnapshot.exists()) {
     throw new APIError("Invalid invite code");
@@ -52,25 +53,35 @@ export default async function registrationHandler(request: Request, secrets: Sec
     throw new APIError("Code already used");
   }
 
+  // Validating Twitter
   const twitterUsername = await getTwitterUsername(params.twitterCode, secrets);
-
   if (await usernameExists("twitterUsername", twitterUsername)) {
     throw new APIError("Twitter already used");
   }
 
-  const { username: discordUsername, guilds } = await getDiscordData(params.discordCode, secrets);
-
-  if (await usernameExists("discordUsername", discordUsername)) {
-    throw new APIError("Discord already used");
+  // Validating Discord
+  let discordUsername = "ERROR";
+  try {
+    const { username, guilds } = await getDiscordData(params.discordCode, secrets);
+    discordUsername = username;
+    if (await usernameExists("discordUsername", discordUsername)) {
+      throw new APIError("Discord already used");
+    }
+    if (!guilds.some((guild) => guild.id === tlxGuidID)) {
+      throw new APIError("Not in the TLX Discord server");
+    }
+  } catch (error) {
+    logger.log(`Discord validation failed: ${error}`);
   }
 
-  if (!guilds.some((guild) => guild.id === tlxGuidID)) {
-    throw new APIError("Not in the TLX Discord server");
-  }
-
+  // Saving user
   const user = { twitterUsername, discordUsername };
   await db.ref("users").child(address).set(user);
+
+  // Generating invite codes
   const codes = await generateAndSaveInviteCodes(address, invitesPerUser);
+
+  // Using invite code
   await useCode(params.inviteCode, address);
 
   return { address, ...user, codes };
