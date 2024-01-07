@@ -21,16 +21,20 @@ async function getTwitterUsername(code: string, secrets: Secrets): Promise<strin
   }
 }
 
-async function getDiscordData(code: string, secrets: Secrets): Promise<{ username: string; guilds: Guild[] }> {
+async function getDiscordData(
+  code: string,
+  secrets: Secrets
+): Promise<{ username: string; guilds: Guild[]; error: boolean }> {
   try {
     logger.info("Getting Discord data");
     logger.info(`Code: ${code}`);
     const discordService = await DiscordService.fromCode(code, secrets);
     const username = await discordService.getUsername();
     const guilds = await discordService.getGuilds();
-    return { username, guilds };
+    return { username, guilds, error: false };
   } catch (error) {
-    throw new APIError(`Discord authentication failed: ${error}`);
+    logger.error(`Discord authentication failed: ${error}`);
+    return { username: "ERROR", guilds: [], error: true };
   }
 }
 
@@ -60,18 +64,14 @@ export default async function registrationHandler(request: Request, secrets: Sec
   }
 
   // Validating Discord
-  let discordUsername = "ERROR";
-  try {
-    const { username, guilds } = await getDiscordData(params.discordCode, secrets);
-    discordUsername = username;
+  const { username: discordUsername, guilds, error } = await getDiscordData(params.discordCode, secrets);
+  if (!error) {
     if (await usernameExists("discordUsername", discordUsername)) {
       throw new APIError("Discord already used");
     }
     if (!guilds.some((guild) => guild.id === tlxGuidID)) {
       throw new APIError("Not in the TLX Discord server");
     }
-  } catch (error) {
-    logger.log(`Discord validation failed: ${error}`);
   }
 
   // Saving user
