@@ -9,6 +9,7 @@ import { generateAndSaveInviteCodes, useCode, userExists, usernameExists } from 
 import { getUserAddress, validateParams } from "./utils";
 
 const requiredKeys = ["twitterCode", "discordCode", "signature", "inviteCode"];
+const partnerCodes = ["kirbycrypto"];
 
 async function getTwitterUsername(code: string, secrets: Secrets): Promise<string> {
   try {
@@ -49,12 +50,15 @@ export default async function registrationHandler(request: Request, secrets: Sec
   }
 
   // Validating invite code
-  const codeSnapshot = await db.ref("invites").child(params.inviteCode).get();
-  if (!codeSnapshot.exists()) {
-    throw new APIError("Invalid invite code");
-  }
-  if (codeSnapshot.val().used) {
-    throw new APIError("Code already used");
+  const isPartner = partnerCodes.includes(params.inviteCode);
+  if (!isPartner) {
+    const codeSnapshot = await db.ref("invites").child(params.inviteCode).get();
+    if (!codeSnapshot.exists()) {
+      throw new APIError("Invalid invite code");
+    }
+    if (codeSnapshot.val().used) {
+      throw new APIError("Code already used");
+    }
   }
 
   // Validating Twitter
