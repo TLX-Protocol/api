@@ -31,3 +31,5 @@ export const messageToSign =
 export const codeValidChars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 export const codeLength = 4;
 export const invitesPerUser = 5;
+
+export const partnerCodes = ["kirbycrypto"];
