@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { codeValidChars, messageToSign } from "./constants";
+import { codeValidChars, messageToSign, partnerCodes } from "./constants";
 import { APIError, FunctionHandler, HTTPHandler } from "./types";
 import * as cors from "cors";
 
@@ -44,4 +44,8 @@ export default function wrapHandler<T>(handler: FunctionHandler<T>): HTTPHandler
       }
     });
   };
+}
+
+export function isPartnerCode(code: string): boolean {
+  return partnerCodes.includes(code.toLowerCase());
 }

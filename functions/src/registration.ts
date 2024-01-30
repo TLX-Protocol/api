@@ -6,10 +6,9 @@ import { DiscordService, TwitterService } from "./services";
 import { APIError, RegistrationParams, Guild } from "./types";
 import { Secrets, invitesPerUser, tlxGuidID } from "./constants";
 import { generateAndSaveInviteCodes, useCode, userExists, usernameExists } from "./db";
-import { getUserAddress, validateParams } from "./utils";
+import { getUserAddress, isPartnerCode, validateParams } from "./utils";
 
 const requiredKeys = ["twitterCode", "discordCode", "signature", "inviteCode"];
-const partnerCodes = ["kirbycrypto"];
 
 async function getTwitterUsername(code: string, secrets: Secrets): Promise<string> {
   try {
@@ -50,7 +49,7 @@ export default async function registrationHandler(request: Request, secrets: Sec
   }
 
   // Validating invite code
-  const isPartner = partnerCodes.includes(params.inviteCode);
+  const isPartner = isPartnerCode(params.inviteCode);
   if (!isPartner) {
     const codeSnapshot = await db.ref("invites").child(params.inviteCode).get();
     if (!codeSnapshot.exists()) {

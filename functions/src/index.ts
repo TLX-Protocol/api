@@ -2,7 +2,7 @@ import { onRequest } from "firebase-functions/v2/https";
 import admin from "firebase-admin";
 
 import registrationHandler from "./registration";
-import wrapHandler, { getUserAddress, validateParams } from "./utils";
+import wrapHandler, { getUserAddress, isPartnerCode, validateParams } from "./utils";
 import { userExists } from "./db";
 import { APIError, SignedParams } from "./types";
 import { defineSecret } from "firebase-functions/params";
@@ -53,6 +53,10 @@ export const hasRegistered = onRequest(
 export const inviteCodeUsed = onRequest(
   wrapHandler(async (request) => {
     const { inviteCode } = validateParams<{ inviteCode: string }>(request.query, "inviteCode");
+
+    const isPartner = isPartnerCode(inviteCode);
+    if (isPartner) return false;
+
     const db = admin.database();
     const codeSnapshot = await db.ref("invites").child(inviteCode).get();
     if (!codeSnapshot.exists()) {
