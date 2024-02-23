@@ -32,4 +32,4 @@ export const codeValidChars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopq
 export const codeLength = 4;
 export const invitesPerUser = 5;
 
-export const partnerCodes = ["kirbycrypto", "raccooncrypto"];
+export const partnerCodes = ["kirbycrypto", "raccooncrypto", "yungmatt"];
