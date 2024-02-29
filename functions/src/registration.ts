@@ -39,6 +39,8 @@ async function getDiscordData(
 }
 
 export default async function registrationHandler(request: Request, secrets: Secrets) {
+  throw new APIError("Registrations are closed");
+
   const params = validateParams<RegistrationParams>(request.body, ...requiredKeys);
   const address = getUserAddress(params.signature);
   const db = admin.database();
