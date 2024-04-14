@@ -1,25 +1,7 @@
-import { ethers } from "ethers";
-import { codeValidChars, messageToSign, partnerCodes } from "./constants";
 import { APIError, FunctionHandler, HTTPHandler } from "./types";
 import * as cors from "cors";
 
 const corsFunc = cors({ origin: true });
-
-export function createRandomString(length: number): string {
-  let result = "";
-  for (let i = 0; i < length; i++) {
-    result += codeValidChars.charAt(Math.floor(Math.random() * codeValidChars.length));
-  }
-  return result;
-}
-
-export function getUserAddress(signature: string): string {
-  try {
-    return ethers.verifyMessage(messageToSign, signature);
-  } catch (error) {
-    throw new APIError("Invalid signature");
-  }
-}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function validateParams<T>(body: any, ...keys: string[]): T {
@@ -44,8 +26,4 @@ export default function wrapHandler<T>(handler: FunctionHandler<T>): HTTPHandler
       }
     });
   };
-}
-
-export function isPartnerCode(code: string): boolean {
-  return partnerCodes.includes(code.toLowerCase());
 }

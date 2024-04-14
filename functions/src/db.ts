@@ -1,42 +1,19 @@
 import admin from "firebase-admin";
 
-import { createRandomString } from "./utils";
-import { codeLength } from "./constants";
-
-export async function usernameExists(key: string, username: string): Promise<boolean> {
+export async function exampleRead(id: string): Promise<string> {
   const db = admin.database();
-  const snapshot = await db.ref("users").orderByChild(key).equalTo(username).get();
-  return snapshot.exists();
+  const snapshot = await db.ref("databaseName").child(id).get();
+  return snapshot.val().value;
 }
 
-export async function userExists(address: string): Promise<boolean> {
+export async function exampleUpdate(id: string, value: string): Promise<void> {
   const db = admin.database();
-  const snapshot = await db.ref("users").child(address).get();
-  return snapshot.exists();
+  await db.ref("databaseName").child(id).update({ value });
 }
 
-export async function useCode(code: string, user: string): Promise<void> {
+export async function exampleWrite(id: string, value: string): Promise<string> {
   const db = admin.database();
-  await db.ref("invites").child(code).update({ used: true, usedAt: Date.now(), user });
-}
-
-async function generateInviteCode(): Promise<string> {
-  const db = admin.database();
-  let code: string;
-  do {
-    code = createRandomString(codeLength);
-  } while ((await db.ref("invites").child(code).get()).exists());
-  return code;
-}
-
-export async function generateAndSaveInviteCodes(user: string, count: number): Promise<string[]> {
-  const db = admin.database();
-  const codes = [];
-  for (let i = 0; i < count; i++) {
-    const code = await generateInviteCode();
-    const codeMetadata = { creator: user, used: false, createdAt: Date.now(), code };
-    codes.push(code);
-    await db.ref("invites").child(code).set(codeMetadata);
-  }
-  return codes;
+  const data = { id, value };
+  await db.ref("databaseName").child(id).set(data);
+  return value;
 }
