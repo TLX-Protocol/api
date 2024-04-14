@@ -11,7 +11,7 @@ import {
   Vesting,
 } from "./constants";
 
-import bigintToNumber from "./helpers/big-nt-to-number";
+import bigintToNumber from "./helpers/bigint-to-number";
 
 const provider = new JsonRpcProvider(OPTIMISM_RPC);
 const erc20abi = new Interface(["function balanceOf(address) view returns (uint256)"]);
