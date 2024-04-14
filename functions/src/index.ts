@@ -29,9 +29,11 @@ export const circulatingSupply = onRequest(
 
 export const supply = onRequest(
   wrapHandler(async () => {
-    const maxSupply_ = await getMaxSupply();
-    const totalSupply_ = await getTotalSupply();
-    const circulatingSupply_ = await getCirculatingSupply();
+    const [maxSupply_, totalSupply_, circulatingSupply_] = await Promise.all([
+      getMaxSupply(),
+      getTotalSupply(),
+      getCirculatingSupply(),
+    ]);
     return {
       status: "success",
       data: {
