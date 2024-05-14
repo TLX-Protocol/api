@@ -9,7 +9,6 @@ import {
   Staker,
   TLX,
   Vesting,
-  OldBonding,
 } from "./constants";
 
 import bigintToNumber from "./helpers/bigint-to-number";
@@ -19,7 +18,7 @@ const erc20abi = new Interface(["function balanceOf(address) view returns (uint2
 const tlx = new Contract(TLX, erc20abi, provider);
 
 export const getCirculatingSupply = async () => {
-  const EXCLUDED_ADDRESSES = [Airdrop, Bonding, GenesisLocker, Vesting, Staker, AmmDistributor, OldBonding];
+  const EXCLUDED_ADDRESSES = [Airdrop, Bonding, GenesisLocker, Vesting, Staker, AmmDistributor];
 
   const [airdropBalance, bondingBalance, genesisLockerBalance, vestingBalance, stakerBalance, ammBalance] =
     await Promise.all(EXCLUDED_ADDRESSES.map((address) => tlx.balanceOf(address)));
