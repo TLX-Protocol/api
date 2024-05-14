@@ -1,5 +1,6 @@
 import admin from "firebase-admin";
 
+// Examples
 export async function exampleRead(id: string): Promise<string> {
   const db = admin.database();
   const snapshot = await db.ref("databaseName").child(id).get();

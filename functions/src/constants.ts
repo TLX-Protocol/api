@@ -3,7 +3,8 @@ export const MAX_SUPPLY = 100_000_000;
 // Addresses
 export const AddressProvider = "0xbaa87ecc5dd76526b51ab7fd2d0c814eb967e2e2";
 export const Airdrop = "0xccf9c3162944676c524b649d2ebecac185a47fd9";
-export const Bonding = "0x0d66198914740429b760f83b0008fb6cc9324440";
+export const Bonding = "0xD55c83Fb5BD360362Cc95577D0AaF52861DA2F43";
+export const OldBonding = "0x0d66198914740429b760f83b0008fb6cc9324440";
 export const ChainlinkAutomation = "0x34A2758CbE5CB8DAde0DE0B419a19cc06ffB4289";
 export const GenesisLocker = "0xc068c3261522c97ff719dc97c98c63a1356fef0f";
 export const LeveragedTokenFactory = "0x26647E97d805B478B37D2D8653C41632C112aE65";
