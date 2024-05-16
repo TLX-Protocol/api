@@ -1,12 +1,12 @@
 import { Contract, Interface, JsonRpcProvider } from "ethers";
 import { Airdrop, AmmDistributor, Bonding, GenesisLocker, MAX_SUPPLY, OPTIMISM_RPC, TLX, Vesting } from "./constants";
 
-import lockerAbi from "./abis/locker-abi.json";
 import bigintToNumber from "./helpers/bigint-to-number";
 
 const provider = new JsonRpcProvider(OPTIMISM_RPC);
 const erc20abi = new Interface(["function balanceOf(address) view returns (uint256)"]);
 const tlx = new Contract(TLX, erc20abi, provider);
+const lockerAbi = new Interface(["function totalStaked() view returns (uint256)"]);
 const locker = new Contract(GenesisLocker, lockerAbi, provider);
 
 export const getCirculatingSupply = async () => {
