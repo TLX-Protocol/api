@@ -1,5 +1,5 @@
 import { Contract, Interface, JsonRpcProvider } from "ethers";
-import { Airdrop, AmmDistributor, Bonding, MAX_SUPPLY, OPTIMISM_RPC, TLX, Vesting } from "./constants";
+import { Airdrop, AmmDistributor, Bonding, GenesisLocker, MAX_SUPPLY, OPTIMISM_RPC, TLX, Vesting } from "./constants";
 
 import bigintToNumber from "./helpers/bigint-to-number";
 
@@ -8,13 +8,13 @@ const erc20abi = new Interface(["function balanceOf(address) view returns (uint2
 const tlx = new Contract(TLX, erc20abi, provider);
 
 export const getCirculatingSupply = async () => {
-  const EXCLUDED_ADDRESSES = [Airdrop, Bonding, Vesting, AmmDistributor];
+  const EXCLUDED_ADDRESSES = [Airdrop, Bonding, GenesisLocker, Vesting, AmmDistributor];
 
-  const [airdropBalance, bondingBalance, genesisLockerBalance, vestingBalance, stakerBalance, ammBalance] =
-    await Promise.all(EXCLUDED_ADDRESSES.map((address) => tlx.balanceOf(address)));
+  const [airdropBalance, bondingBalance, genesisLockerBalance, vestingBalance, ammBalance] = await Promise.all(
+    EXCLUDED_ADDRESSES.map((address) => tlx.balanceOf(address))
+  );
 
-  const totalExcluded =
-    airdropBalance + bondingBalance + genesisLockerBalance + vestingBalance + stakerBalance + ammBalance;
+  const totalExcluded = airdropBalance + bondingBalance + genesisLockerBalance + vestingBalance + ammBalance;
 
   return MAX_SUPPLY - bigintToNumber(totalExcluded);
 };
