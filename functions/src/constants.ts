@@ -18,6 +18,7 @@ export const Vesting = "0xebd707214ea4bae19e826f14ec2a82d1b44a75f3";
 export const ZapSwap = "0x461aB832D11A7B18CC444B7C92a1E2B8877A327A";
 export const VelodromePool = "0x6eA20Dbc05f58ED607c374e545BFb402d5796770";
 export const AmmDistributor = "0x9d27E96B3564e51422C1f0592f42b3934f2bd056";
+export const VelodromeVoterAutomation = "0x3B413D27d373bC04e196b59E117E07842258007d";
 
 // Endpoints
 export const OPTIMISM_RPC = "https://mainnet.optimism.io/";

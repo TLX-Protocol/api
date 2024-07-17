@@ -1,5 +1,15 @@
 import { Contract, Interface, JsonRpcProvider } from "ethers";
-import { Airdrop, AmmDistributor, Bonding, GenesisLocker, MAX_SUPPLY, OPTIMISM_RPC, TLX, Vesting } from "./constants";
+import {
+  Airdrop,
+  AmmDistributor,
+  Bonding,
+  GenesisLocker,
+  MAX_SUPPLY,
+  OPTIMISM_RPC,
+  TLX,
+  VelodromeVoterAutomation,
+  Vesting,
+} from "./constants";
 
 import bigintToNumber from "./helpers/bigint-to-number";
 
@@ -10,14 +20,14 @@ const lockerAbi = new Interface(["function totalStaked() view returns (uint256)"
 const locker = new Contract(GenesisLocker, lockerAbi, provider);
 
 export const getCirculatingSupply = async () => {
-  const EXCLUDED_ADDRESSES = [Airdrop, Bonding, GenesisLocker, Vesting, AmmDistributor];
+  const EXCLUDED_ADDRESSES = [Airdrop, Bonding, GenesisLocker, Vesting, AmmDistributor, VelodromeVoterAutomation];
 
-  const [airdropBalance, bondingBalance, genesisLockerBalance, vestingBalance, ammBalance, totalStaked] =
+  const [airdropBalance, bondingBalance, genesisLockerBalance, vestingBalance, ammBalance, voterBalance, totalStaked] =
     await Promise.all([...EXCLUDED_ADDRESSES.map((address) => tlx.balanceOf(address)), locker.totalStaked()]);
 
   const lockedAmount = genesisLockerBalance - totalStaked;
 
-  const totalExcluded = airdropBalance + bondingBalance + lockedAmount + vestingBalance + ammBalance;
+  const totalExcluded = airdropBalance + bondingBalance + lockedAmount + vestingBalance + ammBalance + voterBalance;
 
   return MAX_SUPPLY - bigintToNumber(totalExcluded);
 };
