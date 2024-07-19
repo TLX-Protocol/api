@@ -34,5 +34,13 @@
     "jest": "^29.0.0",
     "@types/jest": "^29.0.0"
   },
-  "private": true
+  "private": true,
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/"
+    ]
+  }
 }
