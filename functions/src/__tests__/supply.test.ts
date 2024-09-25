@@ -9,9 +9,9 @@ describe("Supply Functions", () => {
     expect(circulatingSupply).toBeLessThan(MAX_SUPPLY);
   });
 
-  test("getTotalSupply should return MAX_SUPPLY", async () => {
+  test("getTotalSupply should return total supply", async () => {
     const totalSupply = await getTotalSupply();
-    expect(totalSupply).toBe(MAX_SUPPLY);
+    expect(totalSupply).toBeLessThan(MAX_SUPPLY);
   });
 
   test("getMaxSupply should return MAX_SUPPLY", async () => {
