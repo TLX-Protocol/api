@@ -3,6 +3,7 @@ import {
   Airdrop,
   AmmDistributor,
   Bonding,
+  Burn,
   GenesisLocker,
   MAX_SUPPLY,
   OPTIMISM_RPC,
@@ -22,18 +23,31 @@ const locker = new Contract(GenesisLocker, lockerAbi, provider);
 export const getCirculatingSupply = async () => {
   const EXCLUDED_ADDRESSES = [Airdrop, Bonding, GenesisLocker, Vesting, AmmDistributor, VelodromeVoterAutomation];
 
-  const [airdropBalance, bondingBalance, genesisLockerBalance, vestingBalance, ammBalance, voterBalance, totalStaked] =
-    await Promise.all([...EXCLUDED_ADDRESSES.map((address) => tlx.balanceOf(address)), locker.totalStaked()]);
+  const [
+    airdropBalance,
+    bondingBalance,
+    genesisLockerBalance,
+    vestingBalance,
+    ammBalance,
+    voterBalance,
+    totalStaked,
+    totalSupply,
+  ] = await Promise.all([
+    ...EXCLUDED_ADDRESSES.map((address) => tlx.balanceOf(address)),
+    locker.totalStaked(),
+    getTotalSupply(),
+  ]);
 
   const lockedAmount = genesisLockerBalance - totalStaked;
 
   const totalExcluded = airdropBalance + bondingBalance + lockedAmount + vestingBalance + ammBalance + voterBalance;
 
-  return MAX_SUPPLY - bigintToNumber(totalExcluded);
+  return totalSupply - bigintToNumber(totalExcluded);
 };
 
 export const getTotalSupply = async () => {
-  return Promise.resolve(MAX_SUPPLY);
+  const burn = await tlx.balanceOf(Burn);
+  return MAX_SUPPLY - bigintToNumber(burn);
 };
 
 export const getMaxSupply = async () => {
