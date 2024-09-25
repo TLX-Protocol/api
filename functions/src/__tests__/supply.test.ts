@@ -11,7 +11,7 @@ describe("Supply Functions", () => {
 
   test("getTotalSupply should return total supply", async () => {
     const totalSupply = await getTotalSupply();
-    expect(totalSupply).toBeLessThanOrEqual(MAX_SUPPLY);
+    expect(totalSupply).toBeLessThan(MAX_SUPPLY);
   });
 
   test("getMaxSupply should return MAX_SUPPLY", async () => {
