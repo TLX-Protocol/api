@@ -15,12 +15,12 @@ jobs:
       - name: Installing Dependencies
         working-directory: ./functions
         run: yarn
-      - name: Building App
-        working-directory: ./functions
-        run: yarn run build
       - name: Linting
         working-directory: ./functions
         run: yarn run lint
+      - name: Building App
+        working-directory: ./functions
+        run: yarn run build
       - name: Running Tests
         working-directory: ./functions
         run: yarn run test

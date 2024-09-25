@@ -8,20 +8,21 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
-
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 18
-
       - name: Installing Dependencies
+        working-directory: ./functions
         run: yarn
-
+      - name: Linting
+        working-directory: ./functions
+        run: yarn run lint
       - name: Building App
+        working-directory: ./functions
         run: yarn run build
-
       - name: Running Tests
+        working-directory: ./functions
         run: yarn run test
