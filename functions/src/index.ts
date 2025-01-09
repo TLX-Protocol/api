@@ -3,6 +3,7 @@ import admin from "firebase-admin";
 
 import wrapHandler from "./utils";
 import { getCirculatingSupply, getMaxSupply, getTotalSupply } from "./supply";
+import getVaa from "./hermes";
 
 admin.initializeApp();
 
@@ -42,5 +43,15 @@ export const supply = onRequest(
         circulatingSupply: circulatingSupply_,
       },
     };
+  })
+);
+
+export const hermes = onRequest(
+  wrapHandler(async (req) => {
+    const feedId = req.query.id;
+    if (!feedId) throw new Error("feedId is required");
+    if (typeof feedId !== "string") throw new Error("Invalid feedId");
+    const vaa = await getVaa(feedId);
+    return { status: "success", data: { vaa } };
   })
 );
